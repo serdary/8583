@@ -24,7 +24,7 @@ module ISO8583
     
     # yield once with the number of each set field.
     def each #:yields: each bit set in the bitmap.
-      @bmp.each_with_index {|set, i| yield i+1 if set}
+      @bmp.each_with_index { |set, i| yield i+1 if set && i != 0 }
     end
     
     # Returns whether the bit is set or not.
