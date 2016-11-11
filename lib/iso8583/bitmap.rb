@@ -85,6 +85,12 @@ module ISO8583
     private
 
     def initialize_from_message(message)
+      # Message's format is a sequence of HEX values: (ie: 822000010000000004000000000000001111194228001234045678301)
+      # Below code will treat this sequence as ascii characters, so 8 will be converted to 00111000 which is 56, which is ASCII 8.
+      # Because of this, below code will create an incorrect bitmap (in this case a bitmap with only 64 bits).
+      # Based on the tests of this gem, it expects a byte sequence (@see BitmapTests#49)
+      message = [message].pack('H*')
+
       bmp = message.unpack("B64")[0]
       if bmp[0,1] == "1"
         bmp = message.unpack("B128")[0]
