@@ -106,7 +106,12 @@ module ISO8583
       # after the bitmap is taken away.
       def parse(str)
         bmp  = Bitmap.new(str)
+
+        # In order to remove 8 or 16 bytes from hex sequence (note that a hex char is a nibble), first convert it to bytes
+        # then, remove 8 or 16 bytes depending on the bitmap size and then convert it back.
+        str = [str].pack('H*')
         rest = bmp[1] ? str[16, str.length] : str[8, str.length]
+        rest = rest.unpack('H*').first
         [ bmp, rest ]
       end
     end
